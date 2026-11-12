@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Two Sides · English listening and speaking</title>
+  <link rel="stylesheet" href="./style.css">
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <header class="top"><div class="wrap top-inner">
+    <span class="brand"><span class="mark" aria-hidden="true">“</span> Two Sides</span>
+    <span class="level">Novice High English</span>
+  </div></header>
+  <main class="wrap">
+    <section class="story" aria-labelledby="title">
+      <div>
+        <p class="place" id="place"></p>
+        <h1 id="title">Two Sides</h1>
+        <p id="intro"></p>
+      </div>
+      <button type="button" class="outline" id="change">↻ <span>Change story</span></button>
+    </section>
+    <p class="directions">Listen to both people. Ask up to three questions in all. Then tell what you think happened.</p>
+    <div id="people" class="people" aria-label="People to talk to"></div>
+    <section class="conversation" aria-labelledby="conversation-title">
+      <div class="conversation-head">
+        <h2 id="conversation-title">Talk to a witness</h2>
+        <span class="count" id="count" aria-live="polite"></span>
+      </div>
+      <div id="log" role="log" aria-label="Conversation"></div>
+      <div class="controls">
+        <button type="button" class="primary" id="ask">Start question</button>
+        <button type="button" class="outline" id="mode" hidden></button>
+      </div>
+      <p id="status" role="status"></p>
+      <details id="demo" hidden>
+        <summary>Demo questions</summary>
+        <div id="demo-questions" class="controls"></div>
+      </details>
+    </section>
+    <section class="notes" aria-labelledby="notes-title">
+      <h2 id="notes-title">What do you think happened?</h2>
+      <p>Use a detail from each person. What did they both see? What did they see differently?</p>
+      <textarea id="notes" aria-label="Your notes" placeholder="I think…"></textarea>
+    </section>
+  </main>
+</body>
+</html>
