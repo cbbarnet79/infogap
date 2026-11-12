@@ -2,6 +2,7 @@ export const stories = [
   {
     id: 'welcome', title: 'The missing name tag', place: 'At a welcome party',
     intro: 'Ana came to a welcome party. Her name tag was not on the table. Two people were there when she arrived.',
+    questions: ['How do you spell Ana’s name?', 'Who do you think the name tag was for?', 'What did Ana do next?'],
     people: [
       { name: 'Mia', role: 'Guest', voice: 'marin',
         opening: 'I was by the door. Ana said, “Hi, I’m Ana López.” We looked for her name tag. I saw a tag that said “Anna Lopez.” I thought it was hers.',
@@ -14,6 +15,7 @@ export const stories = [
   {
     id: 'class', title: 'The wrong room', place: 'On the first night of French class',
     intro: 'Luis came to French class. He waited outside Room 12, but his class was in Room 21.',
+    questions: ['What room did Luis go to?', 'Why do you think he went there?', 'When did the room change?'],
     people: [
       { name: 'Nora', role: 'Student', voice: 'marin',
         opening: 'I met Luis outside Room 12 at six. He said, “I’m here for French.” He showed me an email with the number 12. I thought he went to the room in his email.',
@@ -26,6 +28,7 @@ export const stories = [
   {
     id: 'event', title: 'The early guest', place: 'At a community language event',
     intro: 'Kim came to a language event at five. The doors were closed. Two people saw her waiting.',
+    questions: ['What time did Kim get there?', 'What did the card say?', 'Where did the tour start?'],
     people: [
       { name: 'Ava', role: 'Event guest', voice: 'marin',
         opening: 'I saw Kim by the front door at five. She had a card for the event. I saw “5:00” on the card. I thought the event started at five too.',

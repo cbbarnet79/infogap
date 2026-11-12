@@ -21,7 +21,7 @@
       </div>
       <button type="button" class="outline" id="change">↻ <span>Change story</span></button>
     </section>
-    <p class="directions">Listen to both people. Ask up to three questions in all. Then tell what you think happened.</p>
+    <p class="directions">Listen to both people. Ask up to three questions aloud. Then tell what you think happened.</p>
     <div id="people" class="people" aria-label="People to talk to"></div>
     <section class="conversation" aria-labelledby="conversation-title">
       <div class="conversation-head">
@@ -34,9 +34,10 @@
         <button type="button" class="outline" id="mode" hidden></button>
       </div>
       <p id="status" role="status"></p>
-      <details id="demo" hidden>
-        <summary>Demo questions</summary>
-        <div id="demo-questions" class="controls"></div>
+      <details open>
+        <summary>Questions you can ask</summary>
+        <p>Say one of these questions aloud, or ask your own.</p>
+        <ul id="question-ideas"></ul>
       </details>
     </section>
     <section class="notes" aria-labelledby="notes-title">

@@ -7,8 +7,8 @@ The incidents draw on Tennessee Language Center French Beginner 1 topics: introd
 ## Run locally
 
 1. Use Node.js 22 or newer and run `npm start`.
-2. Open [http://localhost:3000](http://localhost:3000). Demo mode uses scripted sample questions, text, and your browser's speech synthesis when available.
-3. To enable live voice, create a local `.env` file with `OPENAI_API_KEY=your_key_here`, then restart the server. Use an OpenAI API project with access to `gpt-realtime-2.1`. Allow microphone access when prompted. Choose **Start question**, speak, and choose **Send question**.
+2. Open [http://localhost:3000](http://localhost:3000). Demo mode plays the witness stories using your browser’s speech synthesis when available. The suggested questions are prompts to practice aloud. Witness replies require live voice.
+3. To enable live voice, create a local `.env` file with `OPENAI_API_KEY=your_key_here`, then restart the server. Use an OpenAI API project with access to `gpt-realtime-2.1`. Allow microphone access when prompted. Choose **Start question**, say a suggested question or your own aloud, and choose **Send question**.
 
 ## Deploy to Netlify
 

@@ -38,22 +38,24 @@ function render() {
   el('ask').hidden = demo;
   el('ask').disabled = busy || (!recording && (!heard.has(selected) || used >= maximumQuestions));
   el('ask').textContent = recording ? 'Send question' : 'Start question';
-  el('demo').hidden = !demo;
   for (const [index, card] of Array.from(el('people').children).entries()) {
     card.classList.toggle('selected', index === selected);
     const button = card.querySelector('button');
     button.textContent = heard.has(index) ? 'Listen again' : 'Listen to ' + story().people[index].name;
     button.disabled = busy || Boolean(recording);
   }
-  for (const button of el('demo-questions').children) {
-    button.disabled = busy || !heard.has(selected) || used >= maximumQuestions;
-  }
+
 }
 
 function showStory() {
   el('title').textContent = story().title;
   el('place').textContent = story().place;
   el('intro').textContent = story().intro;
+  el('question-ideas').replaceChildren(...story().questions.map((question) => {
+    const item = document.createElement('li');
+    item.textContent = question;
+    return item;
+  }));
   el('log').replaceChildren();
   el('notes').value = '';
   el('people').replaceChildren();
@@ -76,7 +78,7 @@ function speak(text) {
   window.speechSynthesis.cancel();
   const line = new SpeechSynthesisUtterance(text);
   line.lang = 'en-US';
-  line.rate = 0.85;
+  line.rate = 1;
   window.speechSynthesis.speak(line);
 }
 
@@ -203,10 +205,14 @@ async function listen(index) {
   const person = witness();
   await perform(`Getting ${person.name}’s story…`, async () => {
     const text = demo ? person.opening : await respond(await connect(),
-      `You are ${person.name}. Read this statement aloud slowly, exactly as written: ${person.opening}`);
+      `You are ${person.name}. Read this statement aloud at a clear, natural pace, exactly as written: ${person.opening}`);
     if (demo) speak(text);
     message(person.name, text || person.opening);
     heard.add(index);
+    if (demo) {
+      el('status').textContent = 'Listening demo. Practice the questions aloud. Witness replies need live voice.';
+      return;
+    }
     el('status').textContent = used < maximumQuestions
       ? `Ask ${person.name} a question or listen to the other person.`
       : 'Use details from both people to tell what you think happened.';
@@ -240,10 +246,26 @@ async function sendQuestion() {
   track.stop();
   await perform(`${witness().name} is listening…`, async () => {
     await connection.sender.replaceTrack(null);
-    await exchange(connection.dc, { type: 'input_audio_buffer.commit' },
-      (event) => event.type === 'input_audio_buffer.committed' ? true : undefined);
+    let itemId;
+    const input = await exchange(connection.dc, { type: 'input_audio_buffer.commit' }, (event) => {
+      if (event.type === 'input_audio_buffer.committed') itemId = event.item_id;
+      if (!itemId || event.item_id !== itemId) return;
+      if (event.type === 'conversation.item.input_audio_transcription.completed') {
+        return { transcript: event.transcript?.trim() || '' };
+      }
+      if (event.type === 'conversation.item.input_audio_transcription.failed') {
+        return { transcript: '' };
+      }
+    });
+    if (!/\p{L}/u.test(input.transcript)) {
+      await exchange(connection.dc, { type: 'conversation.item.delete', item_id: itemId },
+        (event) => event.type === 'conversation.item.deleted' && event.item_id === itemId ? true : undefined);
+      el('status').textContent = 'We did not hear a question. Choose Start question and say it aloud.';
+      return;
+    }
     const answer = await respond(connection);
     used++;
+    message('You', input.transcript);
     message(witness().name, answer || 'The witness answered by voice.');
     afterQuestion();
   });
@@ -256,31 +278,12 @@ function afterQuestion() {
   render();
 }
 
-const sampleQuestions = ['Where were you?', 'Why do you think it happened?', 'What else did you see?'];
-sampleQuestions.forEach((question, index) => {
-  const button = document.createElement('button');
-  button.type = 'button';
-  button.className = 'outline';
-  button.textContent = question;
-  button.addEventListener('click', () => {
-    const person = witness();
-    const sentences = person.opening.match(/[^.!?]+[.!?]/g).map((sentence) => sentence.trim());
-    const answer = [sentences[0], sentences.at(-1), person.details.split('. ')[0].replace(/\.$/, '') + '.'][index];
-    message('You', question);
-    message(person.name, answer);
-    speak(answer);
-    used++;
-    afterQuestion();
-  });
-  el('demo-questions').append(button);
-});
-
 el('ask').addEventListener('click', () => recording ? sendQuestion() : startQuestion());
 el('mode').addEventListener('click', () => {
   modeChosen = true;
   demo = !demo;
   closeConnections();
-  el('status').textContent = demo ? 'Demo mode. Choose a sample question.' : 'Live voice. Choose Start question when you are ready.';
+  el('status').textContent = demo ? 'Listening demo. Choose a person to hear their story.' : 'Live voice. Choose Start question when you are ready.';
   render();
 });
 el('change').addEventListener('click', () => {
